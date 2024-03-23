@@ -1,0 +1,33 @@
+This Arduino sketch appears to be designed to control various devices (such as lights, fans, and garden lights) via Bluetooth communication using an HC-06 Bluetooth module. Let's break down the code:
+
+1. **Includes and Initialization**:
+   - `#include <SoftwareSerial.h>`: This line includes the SoftwareSerial library, which allows serial communication on digital pins other than the hardware serial port (usually pins 0 and 1).
+   - `SoftwareSerial HC06(10, 11);`: This line initializes a SoftwareSerial object named `HC06` on Arduino pins 10 (TX) and 11 (RX), which are connected to the corresponding TX and RX pins of the HC-06 Bluetooth module.
+   - `int C1 = 7; int C2 = 6; int C3 = 8; int C4 = 9;`: These lines define the Arduino pins connected to the devices being controlled (e.g., lights, fan, garden lights).
+
+2. **Brightness Levels**:
+   - An array `brightnessLevels` is defined to map input values (0-255) to different brightness levels for controlling the light intensity.
+
+3. **Setup Function**:
+   - `HC06.begin(9600);`: Initializes the HC-06 Bluetooth module with a baud rate of 9600 baud.
+   - `pinMode(C1, OUTPUT); pinMode(C2, OUTPUT); pinMode(C3, OUTPUT); pinMode(C4, OUTPUT);`: Sets the specified pins (C1, C2, C3, C4) as output pins to control the connected devices.
+
+4. **Loop Function**:
+   - `if(HC06.available() > 0)`: Checks if there is any data available to be read from the Bluetooth module.
+   - `char receive = HC06.read();`: Reads the incoming data from the Bluetooth module.
+   - `int brightness = map(receive, 0, 255, 1, 4);`: Maps the incoming data to a range of 1 to 4, representing different brightness levels.
+   - The code then checks the received character and performs actions accordingly:
+     - If the received character is '1', it turns off the light connected to pin C2 and sends a message back indicating that the light is off.
+     - If the received character is '2', it sets the brightness of the light to the corresponding level based on the mapped value.
+     - If the received character is '3', it turns on the light at full brightness.
+     - If the received character is '4', it turns on the fan connected to pin C1.
+     - If the received character is '5', it turns off the fan.
+     - If the received character is '6', it unlocks something (possibly a door) by setting pin C3 HIGH.
+     - If the received character is '7', it locks something by setting pin C3 LOW.
+     - If the received character is '8', it turns on the garden lights connected to pin C4.
+     - If the received character is '9', it turns off the garden lights.
+
+5. **Communication**:
+   - After each action, the Arduino sends a message back to the Bluetooth module confirming the action performed.
+
+This sketch effectively creates a Bluetooth-controlled system for managing various devices, providing control over lights, fans, and possibly other equipment wirelessly through a mobile app or any other device with Bluetooth capabilities.
